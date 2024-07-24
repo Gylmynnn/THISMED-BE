@@ -8,11 +8,11 @@ datasource db {
 }
 
 model comments {
-  id        Int   @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   content   String
   image     String?
   createdAt DateTime @default(now())
-  updatedAt DateTime
+  updatedAt DateTime @updatedAt
   postId    Int
   userId    String
   posts     posts    @relation(fields: [postId], references: [id], onDelete: Cascade)
@@ -20,11 +20,11 @@ model comments {
 }
 
 model posts {
-  id        Int     @id @default(autoincrement())
+  id        Int        @id @default(autoincrement())
   title     String
   image     String?
   createdAt DateTime   @default(now())
-  updatedAt DateTime
+  updatedAt DateTime   @updatedAt
   likes     Int        @default(0)
   dislikes  Int        @default(0)
   category  String[]
@@ -34,14 +34,13 @@ model posts {
 }
 
 model users {
-  id           String     @id @default(uuid())
-  username     String
-  avatar       String?
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime
-  email        String     @unique
-  googleUserId String?
-  password     String
-  comments     comments[]
-  posts        posts[]
+  id        String     @id @default(uuid())
+  username  String
+  avatar    String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  email     String     @unique
+  password  String
+  comments  comments[]
+  posts     posts[]
 }
