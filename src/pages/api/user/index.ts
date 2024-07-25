@@ -3,7 +3,11 @@ import prisma from "@/lib/prisma";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "GET") {
-    handleGetMethod(req, res);
+    if (req.query.id) {
+      handleGetMethodById(req, res);
+    } else {
+      handleGetMethod(req, res);
+    }
   }
 
   if (req.method === "POST") {
@@ -19,18 +23,39 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
+async function handleGetMethodById(req: NextApiRequest, res: NextApiResponse) {
+  const id = req.query.id as string;
+
+  try {
+    const response = await prisma.users.findUnique({
+      where: {
+        id: String(id),
+      },
+    });
+    return res
+      .status(200)
+      .json({ sessage: "succesfully", status: 200, data: response });
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ Message: "failed", status: 500, data: "error :(" });
+  }
+}
+
 async function handleGetMethod(req: NextApiRequest, res: NextApiResponse) {
   try {
     const response = await prisma.users.findMany();
     if (response.length === 0) {
-      res.status(200).json({ Message: "No Data Found" });
+      return res.status(200).json({ Message: "No Data Found" });
     }
 
-    res
+    return res
       .status(200)
       .json({ sessage: "succesfully", status: 200, data: response });
   } catch (err) {
-    res.status(500).json({ Message: `${err} When Get Data` });
+    return res
+      .status(500)
+      .json({ Message: "failed", status: 500, data: "error :(" });
   }
 }
 
@@ -46,13 +71,15 @@ async function handlePostMethod(req: NextApiRequest, res: NextApiResponse) {
         password: password,
       },
     });
-    res.status(201).json({
-      message: "create user succesfully",
+    return res.status(201).json({
+      message: "succesfully",
       status: 201,
       data: response,
     });
   } catch (err) {
-    res.status(500).json({ Message: `${err} When Get Data` });
+    return res
+      .status(500)
+      .json({ Message: "failed", status: 500, data: "error :(" });
   }
 }
 
@@ -71,13 +98,15 @@ async function handlePutMethod(req: NextApiRequest, res: NextApiResponse) {
         password: password,
       },
     });
-    res.status(200).json({
-      message: "update user succesfully",
+    return res.status(200).json({
+      message: "succesfully",
       status: 200,
       data: response,
     });
   } catch (err) {
-    res.status(500).json({ Message: `${err} when update user data` });
+    return res
+      .status(500)
+      .json({ Message: "failed", status: 500, data: "error :(" });
   }
 }
 
@@ -90,12 +119,14 @@ async function handleDeleteMethod(req: NextApiRequest, res: NextApiResponse) {
         id: String(id),
       },
     });
-    res.status(200).json({
-      message: "delete user succesfully",
+    return res.status(200).json({
+      message: "succesfully",
       status: 200,
       data: response,
     });
   } catch (err) {
-    res.status(500).json({ Message: `${err} when delete user data` });
+    return res
+      .status(500)
+      .json({ Message: "failed", status: 500, data: "error :(" });
   }
 }
