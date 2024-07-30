@@ -1,7 +1,16 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
+import NextCors from "nextjs-cors";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  await NextCors(req, res, {
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+    origin: true,
+    optionsSuccessStatus: 200,
+  });
   if (req.method === "GET") {
     if (req.query.id) {
       handleGetMethodById(req, res);
@@ -9,15 +18,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       handleGetMethod(req, res);
     }
   }
-
   if (req.method === "POST") {
     handlePostMethod(req, res);
   }
-
   if (req.method === "PUT") {
     handlePutMethod(req, res);
   }
-
   if (req.method === "DELETE") {
     handleDeleteMethod(req, res);
   }
@@ -32,9 +38,11 @@ async function handleGetMethodById(req: NextApiRequest, res: NextApiResponse) {
         id: String(id),
       },
     });
-    return res
-      .status(200)
-      .json({ sessage: "succesfully", status: 200, data: response });
+    return res.status(200).json({
+      msessage: "get data by id succesfully",
+      status: 200,
+      data: response,
+    });
   } catch (err) {
     return res
       .status(500)
@@ -51,7 +59,7 @@ async function handleGetMethod(req: NextApiRequest, res: NextApiResponse) {
 
     return res
       .status(200)
-      .json({ sessage: "succesfully", status: 200, data: response });
+      .json({ msessage: "get data succesfully", status: 200, data: response });
   } catch (err) {
     return res
       .status(500)
@@ -72,7 +80,7 @@ async function handlePostMethod(req: NextApiRequest, res: NextApiResponse) {
       },
     });
     return res.status(201).json({
-      message: "succesfully",
+      message: "add data succesfully",
       status: 201,
       data: response,
     });
@@ -84,12 +92,13 @@ async function handlePostMethod(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function handlePutMethod(req: NextApiRequest, res: NextApiResponse) {
-  const { id, username, avatar, email, password } = req.body;
+  const id = req.query.id as string;
+  const { username, avatar, email, password } = req.body;
 
   try {
     const response = await prisma.users.update({
       where: {
-        id: id,
+        id: String(id),
       },
       data: {
         username: username,
@@ -99,7 +108,7 @@ async function handlePutMethod(req: NextApiRequest, res: NextApiResponse) {
       },
     });
     return res.status(200).json({
-      message: "succesfully",
+      message: " update data succesfully",
       status: 200,
       data: response,
     });
@@ -120,7 +129,7 @@ async function handleDeleteMethod(req: NextApiRequest, res: NextApiResponse) {
       },
     });
     return res.status(200).json({
-      message: "succesfully",
+      message: "delete data succesfully",
       status: 200,
       data: response,
     });

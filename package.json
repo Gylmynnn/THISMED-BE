@@ -10,7 +10,10 @@
   },
   "dependencies": {
     "@prisma/client": "^5.17.0",
+    "@types/cors": "^2.8.17",
+    "cors": "^2.8.5",
     "next": "14.2.5",
+    "nextjs-cors": "^2.2.0",
     "prisma": "^5.17.0",
     "react": "^18",
     "react-dom": "^18"
