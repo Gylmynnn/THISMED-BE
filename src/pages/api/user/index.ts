@@ -38,8 +38,11 @@ async function handleGetMethodById(req: NextApiRequest, res: NextApiResponse) {
         id: String(id),
       },
     });
+    if (!response?.id) {
+      return res.status(404).json("err : data not found");
+    }
     return res.status(200).json({
-      msessage: "get data by id succesfully",
+      msessage: "Get user by id succesfully",
       status: 200,
       data: response,
     });
@@ -54,12 +57,12 @@ async function handleGetMethod(req: NextApiRequest, res: NextApiResponse) {
   try {
     const response = await prisma.users.findMany();
     if (response.length === 0) {
-      return res.status(200).json({ Message: "No Data Found" });
+      return res.status(404).json("err : Users not found");
     }
 
     return res
       .status(200)
-      .json({ msessage: "get data succesfully", status: 200, data: response });
+      .json({ msessage: "Get users succesfully", status: 200, data: response });
   } catch (err) {
     return res
       .status(500)
@@ -73,14 +76,14 @@ async function handlePostMethod(req: NextApiRequest, res: NextApiResponse) {
   try {
     const response = await prisma.users.create({
       data: {
-        username: username,
-        avatar: avatar,
-        email: email,
-        password: password,
+      username,
+       avatar,
+       email,
+       password
       },
     });
     return res.status(201).json({
-      message: "add data succesfully",
+      message: "Create user succesfully",
       status: 201,
       data: response,
     });
@@ -101,14 +104,14 @@ async function handlePutMethod(req: NextApiRequest, res: NextApiResponse) {
         id: String(id),
       },
       data: {
-        username: username,
-        avatar: avatar,
-        email: email,
-        password: password,
+       username,
+       avatar,
+       email,
+       password
       },
     });
     return res.status(200).json({
-      message: " update data succesfully",
+      message: " Update user succesfully",
       status: 200,
       data: response,
     });
