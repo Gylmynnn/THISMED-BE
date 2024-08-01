@@ -1,16 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
-import NextCors from "nextjs-cors";
 
-export default async function handler(
+export default function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  await NextCors(req, res, {
-    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
-    origin: true,
-    optionsSuccessStatus: 200,
-  });
+
   if (req.method === "GET") {
     if (req.query.id) {
       handleGetMethodById(req, res);
@@ -43,7 +38,7 @@ async function handleGetMethodById(req: NextApiRequest, res: NextApiResponse) {
       },
     });
     return res.status(200).json({
-      message: "Get data by id succesfully",
+      message: "Get post by id succesfully",
       status: 200,
       data: response,
     });
@@ -70,7 +65,7 @@ async function handleGetMethodByUserId(
       return res.status(200).json({ Message: "data not found" });
     }
     return res.status(200).json({
-      message: "Get user post data succesfully",
+      message: "Get posts by id user succesfully",
       status: 200,
       data: response,
     });
@@ -89,7 +84,7 @@ async function handleGetMethod(req: NextApiRequest, res: NextApiResponse) {
     }
     return res
       .status(200)
-      .json({ msessage: "Get data succesfully", status: 200, data: response });
+      .json({ msessage: "Get posts succesfully", status: 200, data: response });
   } catch (err) {
     return res
       .status(500)

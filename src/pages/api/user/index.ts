@@ -1,16 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
-import NextCors from "nextjs-cors";
+// import NextCors from "nextjs-cors";
 
-export default async function handler(
+export default function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  await NextCors(req, res, {
-    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
-    origin: true,
-    optionsSuccessStatus: 200,
-  });
   if (req.method === "GET") {
     if (req.query.id) {
       handleGetMethodById(req, res);
@@ -71,6 +66,8 @@ async function handleGetMethod(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function handlePostMethod(req: NextApiRequest, res: NextApiResponse) {
+
+  
   const { username, avatar, email, password } = req.body;
 
   try {
