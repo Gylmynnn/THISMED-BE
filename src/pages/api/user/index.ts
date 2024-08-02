@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
+import argon2 from "argon2"
 // import NextCors from "nextjs-cors";
 
 export default function handler(
@@ -13,9 +14,6 @@ export default function handler(
       handleGetMethod(req, res);
     }
   }
-  if (req.method === "POST") {
-    handlePostMethod(req, res);
-  }
   if (req.method === "PUT") {
     handlePutMethod(req, res);
   }
@@ -23,7 +21,7 @@ export default function handler(
     handleDeleteMethod(req, res);
   }
 }
-
+  
 async function handleGetMethodById(req: NextApiRequest, res: NextApiResponse) {
   const id = req.query.id as string;
 
@@ -58,32 +56,6 @@ async function handleGetMethod(req: NextApiRequest, res: NextApiResponse) {
     return res
       .status(200)
       .json({ msessage: "Get users succesfully", status: 200, data: response });
-  } catch (err) {
-    return res
-      .status(500)
-      .json({ Message: "failed", status: 500, data: "error :(" });
-  }
-}
-
-async function handlePostMethod(req: NextApiRequest, res: NextApiResponse) {
-
-  
-  const { username, avatar, email, password } = req.body;
-
-  try {
-    const response = await prisma.users.create({
-      data: {
-      username,
-       avatar,
-       email,
-       password
-      },
-    });
-    return res.status(201).json({
-      message: "Create user succesfully",
-      status: 201,
-      data: response,
-    });
   } catch (err) {
     return res
       .status(500)
