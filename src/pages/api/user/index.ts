@@ -21,7 +21,7 @@ export default function handler(
     handleDeleteMethod(req, res);
   }
 }
-  
+
 async function handleGetMethodById(req: NextApiRequest, res: NextApiResponse) {
   const id = req.query.id as string;
 
@@ -64,13 +64,12 @@ async function handleGetMethod(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function handlePutMethod(req: NextApiRequest, res: NextApiResponse) {
-  const id = req.query.id as string;
-  const { username, avatar, email, password } = req.body;
+  const {id, username, avatar, email, password } = req.body;
 
   try {
     const response = await prisma.users.update({
       where: {
-        id: String(id),
+        id
       },
       data: {
        username,
