@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import argon2 from "argon2";
+import * as argon2 from "argon2";
 import prisma from "@/lib/prisma";
 
 export default async function handler(

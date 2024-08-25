@@ -2,5 +2,7 @@
     "editor.fontFamily": "Consolas, 'Courier New', monospace",
     "editor.fontSize": 16,
     "editor.cursorStyle": "underline",
-    "editor.wordWrap": "wordWrapColumn"
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.cursorBlinking": "blink",
+    "editor.cursorWidth": 0
 }
