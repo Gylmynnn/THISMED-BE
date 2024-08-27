@@ -24,7 +24,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const jwtToken = jwt.sign(
         {
             email: response.email,
-            username: response.username,
         },
         JWT_TOKEN
     );
@@ -36,8 +35,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         message: "login successfully",
         data: {
             id: response.id,
-            avatar: response.avatar,
-            username: response.username,
             email: response.email,
             token: jwtToken
         }

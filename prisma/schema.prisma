@@ -1,46 +1,84 @@
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 model comments {
-  id        Int      @id @default(autoincrement())
-  content   String
-  image     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  postId    Int
-  userId    String
-  posts     posts    @relation(fields: [postId], references: [id], onDelete: Cascade)
-  users     users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    id        Int      @id @default(autoincrement())
+    content   String
+    image     String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    postId    Int
+    userId    String
+    posts     posts    @relation(fields: [postId], references: [id], onDelete: Cascade)
+    users     users    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model posts {
-  id        Int        @id @default(autoincrement())
-  title     String
-  image     String?
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  likes     Int        @default(0)
-  dislikes  Int        @default(0)
-  category  String[]
-  userId    String
-  comments  comments[]
-  users     users      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    id          Int           @id @default(autoincrement())
+    title       String
+    image       String?
+    createdAt   DateTime      @default(now())
+    updatedAt   DateTime      @updatedAt
+    category    String[]
+    userId      String
+    comments    comments[]
+    users       users         @relation(fields: [userId], references: [id], onDelete: Cascade)
+    intractions intractions[]
 }
 
 model users {
-  id        String     @id @default(uuid())
-  username  String
-  avatar    String?
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  email     String     @unique
-  password  String
-  comments  comments[]
-  posts     posts[]
+    id          String        @id @default(uuid())
+    createdAt   DateTime      @default(now())
+    updatedAt   DateTime      @updatedAt
+    email       String        @unique
+    password    String
+    intractions intractions[]
+    attribute   attributes?
+    comments    comments[]
+    posts       posts[]
+
+    followers followers[] @relation("UserFollowers")
+    following followers[] @relation("UserFollowings")
+}
+
+model attributes {
+    id       Int      @id @default(autoincrement())
+    username String
+    avatar   String?
+    bio      String
+    badges   String[]
+    userId   String   @unique
+    user     users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model followers {
+    id          Int      @id @default(autoincrement())
+    followerId  String
+    followingId String
+    followedAt  DateTime @default(now())
+
+    follower  users @relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
+    following users @relation("UserFollowings", fields: [followingId], references: [id], onDelete: Cascade)
+
+    @@unique([followerId, followingId])
+}
+
+model intractions {
+    id        Int      @id @default(autoincrement())
+    postId    Int
+    userId    String   @unique
+    liked     Boolean  @default(false)
+    createdAt DateTime @default(now())
+
+    post posts @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+    user users @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([postId, userId])
 }
