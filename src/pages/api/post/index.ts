@@ -10,15 +10,22 @@ export default function handler(
 ) {
     const JWT_TOKEN = process.env.JWT_TOKEN as string;
 
-    const token = req.cookies.token;
+    const tokenCookie = req.cookies.token;
 
-    if (typeof token === "undefined") {
+    const tokenHeader = req.headers.authorization?.split(' ')[1];
+
+    const token = tokenCookie || tokenHeader;
+
+
+    if (!token) {
         return res.status(401).json({
             success: false,
             status: 401,
             message: "Unauthorized",
         });
     }
+
+
 
     jwt.verify(token, JWT_TOKEN, (err) => {
         if (err)

@@ -1,3 +1,4 @@
+
 import { NextApiRequest, NextApiResponse } from "next";
 import jwt from "jsonwebtoken"
 import prisma from "@/lib/prisma";
@@ -53,7 +54,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
 
 async function handleGetMethod(req: NextApiRequest, res: NextApiResponse<ResponseType>) {
-    if (req.query.postId) {
+    if (req.query.userId && req.query.postId) {
+        handleGetMethodByUserIdAndPostId(req, res);
+    } else if (req.query.userId) {
+        handleGetMethodByUserId(req, res);
+    } else if (req.query.postId) {
         handleGetMethodByPostId(req, res);
     } else {
         handleGetMethodDefault(req, res);
@@ -65,18 +70,53 @@ async function handleGetMethod(req: NextApiRequest, res: NextApiResponse<Respons
 async function handleGetMethodByPostId(req: NextApiRequest, res: NextApiResponse<ResponseType>) {
     const postId = req.query.postId as string;
     try {
-        const response = await prisma.comments.findMany({
+        const response = await prisma.intractions.findMany({
             where: {
-                postId: parseInt(String(postId))
+                postId: parseInt(String(postId)),
             }
         });
-        if (response.length == 0) {
-            return res.status(404).json({ success: false, status: 404, message: "No Data Found" });
-        }
 
         return res
             .status(200)
-            .json({ success: true, message: "Get comments by post succesfully", status: 200, data: response });
+            .json({ success: true, message: "Get user intractions by postId succesfully", status: 200, data: response });
+    } catch (err) {
+        return res.status(500).json({ success: false, status: 500, message: 'failed' });
+    }
+}
+
+
+async function handleGetMethodByUserIdAndPostId(req: NextApiRequest, res: NextApiResponse<ResponseType>) {
+    const userId = req.query.userId as string;
+    const postId = req.query.postId as string;
+    try {
+        const response = await prisma.intractions.findMany({
+            where: {
+                userId,
+                postId: parseInt(String(postId)),
+            }
+        });
+
+        return res
+            .status(200)
+            .json({ success: true, message: "Get user intractions by userId succesfully", status: 200, data: response });
+    } catch (err) {
+        return res.status(500).json({ success: false, status: 500, message: 'failed' });
+    }
+}
+
+
+async function handleGetMethodByUserId(req: NextApiRequest, res: NextApiResponse<ResponseType>) {
+    const userId = req.query.userId as string;
+    try {
+        const response = await prisma.intractions.findMany({
+            where: {
+                userId
+            }
+        });
+
+        return res
+            .status(200)
+            .json({ success: true, message: "Get user intractions by userId succesfully", status: 200, data: response });
     } catch (err) {
         return res.status(500).json({ success: false, status: 500, message: 'failed' });
     }
@@ -84,14 +124,14 @@ async function handleGetMethodByPostId(req: NextApiRequest, res: NextApiResponse
 
 async function handleGetMethodDefault(req: NextApiRequest, res: NextApiResponse<ResponseType>) {
     try {
-        const response = await prisma.comments.findMany();
+        const response = await prisma.intractions.findMany();
         if (response.length == 0) {
             return res.status(404).json({ success: false, status: 404, message: "No Data Found" });
         }
 
         return res
             .status(200)
-            .json({ success: true, message: "Get comments succesfully", status: 200, data: response });
+            .json({ success: true, message: "Get users intractions succesfully", status: 200, data: response });
     } catch (err) {
         return res.status(500).json({ success: false, status: 500, message: 'failed' });
     }
@@ -99,20 +139,19 @@ async function handleGetMethodDefault(req: NextApiRequest, res: NextApiResponse<
 
 async function handlePostMethod(req: NextApiRequest, res: NextApiResponse<ResponseType>) {
     const userId = req.query.userId as string;
-    const postId = req.query.postId as string;
-    const { content, image } = req.body;
+    const { username, avatar, bio } = req.body;
     try {
-        const response = await prisma.comments.create({
+        const response = await prisma.attributes.create({
             data: {
-                userId: userId,
-                postId: parseInt(String(postId)),
-                content: content,
-                image: image
+                userId,
+                username,
+                avatar,
+                bio
             }
         });
         return res
             .status(201)
-            .json({ success: true, message: "Create comment succesfully", status: 201, data: response });
+            .json({ success: true, message: "Create user attribute succesfully", status: 201, data: response });
     } catch (err) {
         return res.status(500).json({ success: false, status: 500, message: 'failed' });
     }
@@ -121,23 +160,22 @@ async function handlePostMethod(req: NextApiRequest, res: NextApiResponse<Respon
 async function handlePutMethod(req: NextApiRequest, res: NextApiResponse<ResponseType>) {
     const id = req.query.id as string;
     const userId = req.query.userId as string;
-    const postId = req.query.postId as string;
-    const { content, image } = req.body;
+    const { username, avatar, bio } = req.body;
     try {
-        const response = await prisma.comments.update({
+        const response = await prisma.attributes.update({
             where: {
                 id: parseInt(String(id)),
-                userId: userId,
-                postId: parseInt(String(postId)),
+                userId
             },
             data: {
-                content: content,
-                image: image
+                username,
+                avatar,
+                bio,
             }
         });
         return res
             .status(200)
-            .json({ success: true, message: "Update comment succesfully", status: 200, data: response });
+            .json({ success: true, message: "Update user atribute succesfully", status: 200, data: response });
     } catch (err) {
         return res.status(500).json({ success: false, status: 500, message: 'failed' });
     }
@@ -146,19 +184,18 @@ async function handlePutMethod(req: NextApiRequest, res: NextApiResponse<Respons
 async function handleDeleteMethod(req: NextApiRequest, res: NextApiResponse<ResponseType>) {
     const id = req.query.id as string;
     const userId = req.query.userId as string;
-    const postId = req.query.postId as string;
     try {
-        const response = await prisma.comments.delete({
+        const response = await prisma.attributes.delete({
             where: {
                 id: parseInt(String(id)),
-                userId: userId,
-                postId: parseInt(String(postId)),
+                userId
             },
         });
         return res
             .status(200)
-            .json({ success: true, message: "Delete comment succesfully", status: 200, data: response });
+            .json({ success: true, message: "Delete user atribute succesfully", status: 200, data: response });
     } catch (err) {
         return res.status(500).json({ success: false, status: 500, message: 'failed' });
     }
 }
+

@@ -1,7 +1,8 @@
 import { NextApiRequest } from "next";
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
-export function middleware(req: NextApiRequest) {
+export function middleware(req: NextRequest,) {
+
     if (req.method === "OPTIONS") {
         const response = NextResponse.json(null, {
             status: 200,

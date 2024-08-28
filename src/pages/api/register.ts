@@ -7,7 +7,7 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse<ResponseType>
 ) {
-    const { username, avatar, email, password } = req.body;
+    const { email, password } = req.body;
 
     try {
         const existingUser = await prisma.users.findUnique({
@@ -24,14 +24,10 @@ export default async function handler(
         const passHash = await argon2.hash(password as string);
         const response = await prisma.users.create({
             data: {
-                username,
-                avatar,
                 email,
                 password: passHash,
             },
             select: {
-                username: true,
-                avatar: true,
                 email: true,
             },
         });

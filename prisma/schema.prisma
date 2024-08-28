@@ -66,13 +66,13 @@ model followers {
     follower  users @relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
     following users @relation("UserFollowings", fields: [followingId], references: [id], onDelete: Cascade)
 
-    @@unique([followerId, followingId])
+   
 }
 
 model intractions {
     id        Int      @id @default(autoincrement())
     postId    Int
-    userId    String   @unique
+    userId    String   
     liked     Boolean  @default(false)
     createdAt DateTime @default(now())
 
@@ -80,5 +80,5 @@ model intractions {
 
     user users @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@unique([postId, userId])
+
 }
