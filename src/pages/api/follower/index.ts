@@ -64,9 +64,9 @@ async function handleGetMethodByUserId(
 ) {
   const userId = req.query.userId as string;
   try {
-    const response = await prisma.attributes.findUnique({
+    const response = await prisma.followers.findMany({
       where: {
-        userId,
+        followerId: userId,
       },
     });
 
@@ -88,16 +88,19 @@ async function handleGetMethodDefault(
   res: NextApiResponse<ResponseType>,
 ) {
   try {
-    const response = await prisma.attributes.findMany();
+    const response = await prisma.followers.findMany();
     if (response.length == 0) {
-      return res
-        .status(404)
-        .json({ success: false, status: 404, message: "No Data Found" });
+      return res.status(404).json({
+        success: false,
+        status: 404,
+        message: "No Data Found",
+        data: null,
+      });
     }
 
     return res.status(200).json({
       success: true,
-      message: "Get users attributes succesfully",
+      message: "Get users followers succesfully",
       status: 200,
       data: response,
     });
@@ -112,20 +115,17 @@ async function handlePostMethod(
   req: NextApiRequest,
   res: NextApiResponse<ResponseType>,
 ) {
-  const userId = req.query.userId as string;
-  const { username, avatar, bio } = req.body;
+  const { followerId, followingId } = req.body;
   try {
-    const response = await prisma.attributes.create({
+    const response = await prisma.followers.create({
       data: {
-        userId,
-        username,
-        avatar,
-        bio,
+        followerId,
+        followingId,
       },
     });
     return res.status(201).json({
       success: true,
-      message: "Create user attribute succesfully",
+      message: "Create user follower succesfully",
       status: 201,
       data: response,
     });
@@ -142,22 +142,20 @@ async function handlePutMethod(
 ) {
   const id = req.query.id as string;
   const userId = req.query.userId as string;
-  const { username, avatar, bio } = req.body;
+  const { followingId } = req.body;
   try {
-    const response = await prisma.attributes.update({
+    const response = await prisma.followers.update({
       where: {
         id: parseInt(String(id)),
-        userId,
+        followerId: userId,
       },
       data: {
-        username,
-        avatar,
-        bio,
+        followingId,
       },
     });
     return res.status(200).json({
       success: true,
-      message: "Update user atribute succesfully",
+      message: "Update user follower succesfully",
       status: 200,
       data: response,
     });
@@ -175,15 +173,15 @@ async function handleDeleteMethod(
   const id = req.query.id as string;
   const userId = req.query.userId as string;
   try {
-    const response = await prisma.attributes.delete({
+    const response = await prisma.followers.delete({
       where: {
         id: parseInt(String(id)),
-        userId,
+        followerId: userId,
       },
     });
     return res.status(200).json({
       success: true,
-      message: "Delete user atribute succesfully",
+      message: "Delete user follower succesfully",
       status: 200,
       data: response,
     });

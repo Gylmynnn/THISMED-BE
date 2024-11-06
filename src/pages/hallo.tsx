@@ -1,23 +1,25 @@
-
-
 export default function HalloWorld() {
-
-    async function handleSubmit() {
-
-
-        const response = await fetch('http://localhost:3000/api/intraction', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1AZ21haWwuY29tIiwiaWF0IjoxNzI0ODU2NDIzfQ.b7wgXJshOx1Vw9hpF0trjGR9z3boVv6cnmbpK9avyyU',
-            },
-        })
-        const res = await response.json();
-
-        console.log(res.data);
-    }
-
-    return (
-        <button onClick={handleSubmit}>hallo world</button>
-    )
+  return (
+    <div className="flex h-screen">
+      <div className="w-64 bg-gray-800 text-white p-4  top-0 h-screen">
+        <h2 className="text-xl font-bold mb-4">Gylmyn</h2>
+        <ul>
+          <li className="mb-2">HOME</li>
+          <li className="mb-2">PRODUCT</li>
+          <li className="mb-2">ABOUT</li>
+        </ul>
+      </div>
+      <div className="flex-grow overflow-y-auto p-4 bg-gray-100">
+        <h1 className="text-2xl font-bold mb-4">Body Content</h1>
+        <p className="mb-4">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque vero
+          sequi veniam debitis unde nihil alias provident dolore nesciunt ab!
+        </p>
+        <p className="mb-4">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque vero
+          sequi veniam debitis unde nihil alias provident dolore nesciunt ab!
+        </p>
+      </div>
+    </div>
+  );
 }

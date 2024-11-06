@@ -19,6 +19,7 @@ model comments {
     users     users    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+
 model posts {
     id          Int           @id @default(autoincrement())
     title       String
@@ -42,7 +43,6 @@ model users {
     attribute   attributes?
     comments    comments[]
     posts       posts[]
-
     followers followers[] @relation("UserFollowers")
     following followers[] @relation("UserFollowings")
 }
@@ -62,11 +62,8 @@ model followers {
     followerId  String
     followingId String
     followedAt  DateTime @default(now())
-
     follower  users @relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
     following users @relation("UserFollowings", fields: [followingId], references: [id], onDelete: Cascade)
-
-   
 }
 
 model intractions {
@@ -75,10 +72,6 @@ model intractions {
     userId    String   
     liked     Boolean  @default(false)
     createdAt DateTime @default(now())
-
     post posts @relation(fields: [postId], references: [id], onDelete: Cascade)
-
     user users @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-
 }
